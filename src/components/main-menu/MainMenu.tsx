@@ -1,5 +1,5 @@
-import styles from './css/components.module.css'
-import ClickHistory from './ClickHistory.tsx';
+import styles from './main-menu.module.css'
+import ClickHistory from '../windows/ClickHistory.tsx';
 import {useState} from 'react';
 
 interface GazeCoordinates {
@@ -24,7 +24,7 @@ interface ClickHistoryProps {
 }
 
 
-function Menu({clickData}: ClickHistoryProps) {
+function MainMenu({clickData}: ClickHistoryProps) {
     const [isClickHistoryOpen, setIsClickHistoryOpen] = useState(false);
     return (
         <div className={styles.menu}>
@@ -35,4 +35,4 @@ function Menu({clickData}: ClickHistoryProps) {
     )
 }
 
-export default Menu;
+export default MainMenu;

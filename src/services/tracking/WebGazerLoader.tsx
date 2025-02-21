@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import Menu from '../../components/Menu.tsx';
+import MainMenu from '../../components/main-menu/MainMenu.tsx';
 
 /**
  *
@@ -78,7 +78,6 @@ function WebGazerLoader() {
                 gaze: gazeCoordinates,
             };
             setClickData(prev => [...prev, combinedData]);
-            console.log(`New entry: ${combinedData}`);
         };
 
         // Добавляем слушатель клика
@@ -97,7 +96,7 @@ function WebGazerLoader() {
             <button style={{position:'fixed', top: '10px', right:'10px'}} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? 'Close menu' : 'Open menu'}
             </button>
-            {isMenuOpen && <Menu clickData={clickData}/>}
+            {isMenuOpen && <MainMenu clickData={clickData}/>}
         </>
     );
 }
