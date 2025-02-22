@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import {GazeData, ClickData, MouseData} from '../../@types/coordinates';
+import {GazeData, ClickData, MouseData} from '../../@types';
 import {TrackingService} from './tracking-service.interface.ts';
 
 class WebGazerTrackingService extends EventEmitter implements TrackingService {

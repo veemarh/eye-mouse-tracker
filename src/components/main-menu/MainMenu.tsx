@@ -7,27 +7,31 @@ function MainWindow() {
     const [summary, setSummary] = useState({clicks: 0, gazes: 0});
 
     const start = () => {
+        databaseService.startNewSession();
         webGazerTrackingService.start();
         setTracking(true);
     };
 
     const stop = () => {
         webGazerTrackingService.stop();
+        databaseService.endCurrentSession();
         setTracking(false);
-        const report = databaseService.getReportData();
+        const session = databaseService.getCurrentSessionData();
         setSummary({
-            clicks: report.clickData.length,
-            gazes: report.gazeData.length
+            clicks: session ? session.clickData.length : 0,
+            gazes: session ? session.gazeData.length : 0,
         });
     };
 
     useEffect(() => {
         const updateHandler = () => {
-            const report = databaseService.getReportData();
-            setSummary({
-                clicks: report.clickData.length,
-                gazes: report.gazeData.length,
-            });
+            const session = databaseService.getCurrentSessionData();
+            if (session) {
+                setSummary({
+                    clicks: session.clickData.length,
+                    gazes: session.gazeData.length,
+                });
+            }
         };
         databaseService.on('update', updateHandler);
         return () => {

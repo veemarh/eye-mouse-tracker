@@ -1,5 +1,11 @@
-import {ClickData, GazeData, MouseData} from '../../@types/coordinates';
+import {SessionData} from '../../@types';
 
 export interface StorageService {
-    getReportData(): { gazeData: GazeData[], mouseData: MouseData[], clickData: ClickData[] };
+    startNewSession(): void;
+
+    endCurrentSession(): void;
+
+    getCurrentSessionData(): SessionData | null;
+
+    getAllSessions(): SessionData[];
 }

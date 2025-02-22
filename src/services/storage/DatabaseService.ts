@@ -1,12 +1,11 @@
 import EventEmitter from 'eventemitter3';
 import {StorageService} from './storage-service.interface.ts';
-import {ClickData, GazeData, MouseData} from '../../@types/coordinates';
+import {ClickData, GazeData, MouseData, SessionData} from '../../@types';
 import {webGazerTrackingService} from '../tracking';
 
 class DatabaseService extends EventEmitter implements StorageService {
-    private gazeData: GazeData[] = [];
-    private clickData: ClickData[] = [];
-    private mouseData: MouseData[] = [];
+    private currentSession: SessionData | null = null;
+    private sessions: SessionData[] = [];
 
     constructor() {
         super();
@@ -15,23 +14,51 @@ class DatabaseService extends EventEmitter implements StorageService {
         webGazerTrackingService.on('mouse', this.storeMouse);
     }
 
-    private storeGaze = (data: GazeData) => {
-        this.gazeData.push(data);
+    startNewSession() {
+        this.currentSession = {
+            gazeData: [],
+            clickData: [],
+            mouseData: [],
+            startedAt: new Date(),
+        };
         this.emit('update');
+    }
+
+    endCurrentSession() {
+        if (this.currentSession) {
+            this.sessions.push(this.currentSession);
+            this.currentSession = null;
+            this.emit('update');
+        }
+    }
+
+    private storeGaze = (data: GazeData) => {
+        if (this.currentSession) {
+            this.currentSession.gazeData.push(data);
+            this.emit('update');
+        }
     };
 
     private storeClick = (data: ClickData) => {
-        this.clickData.push(data);
-        this.emit('update');
+        if (this.currentSession) {
+            this.currentSession.clickData.push(data);
+            this.emit('update');
+        }
     };
 
     private storeMouse = (data: MouseData) => {
-        this.mouseData.push(data);
-        this.emit('update');
+        if (this.currentSession) {
+            this.currentSession.mouseData.push(data);
+            this.emit('update');
+        }
     };
 
-    getReportData() {
-        return {clickData: this.clickData, gazeData: this.gazeData, mouseData: this.mouseData};
+    getCurrentSessionData() {
+        return this.currentSession;
+    }
+
+    getAllSessions() {
+        return this.sessions;
     }
 }
 
