@@ -16,7 +16,6 @@ interface WebGazer {
     end(): void;
 }
 
-
 declare global {
     interface Window {
         webgazer: WebGazer;

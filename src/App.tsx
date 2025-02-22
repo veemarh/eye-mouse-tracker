@@ -1,13 +1,13 @@
 import {useState} from 'react'
 import './App.css'
-import WebGazerLoader from './services/tracking/WebGazerLoader.tsx';
+import MainMenu from './components/main-menu/MainMenu.tsx';
 
 function App() {
     const [count, setCount] = useState(0)
 
     return (
         <>
-            <WebGazerLoader/>
+            <MainMenu/>
             <h1>Vite + React</h1>
             <div className="card">
                 <button onClick={() => setCount((count) => count + 1)}>

@@ -1,38 +1,53 @@
-import styles from './main-menu.module.css'
-import ClickHistory from '../windows/ClickHistory.tsx';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import {webGazerTrackingService} from '../../services/tracking';
+import {databaseService} from '../../services/storage';
 
-interface GazeCoordinates {
-    x: number | null;
-    y: number | null;
-    timestamp: number | null;
-}
+function MainWindow() {
+    const [tracking, setTracking] = useState(false);
+    const [summary, setSummary] = useState({clicks: 0, gazes: 0});
 
-interface ClickCoordinates {
-    x: number;
-    y: number;
-    timestamp: number;
-}
+    const start = () => {
+        webGazerTrackingService.start();
+        setTracking(true);
+    };
 
-interface CombinedData {
-    click: ClickCoordinates;
-    gaze: GazeCoordinates;
-}
+    const stop = () => {
+        webGazerTrackingService.stop();
+        setTracking(false);
+        const report = databaseService.getReportData();
+        setSummary({
+            clicks: report.clickData.length,
+            gazes: report.gazeData.length
+        });
+    };
 
-interface ClickHistoryProps {
-    clickData: CombinedData[];
-}
+    useEffect(() => {
+        const updateHandler = () => {
+            const report = databaseService.getReportData();
+            setSummary({
+                clicks: report.clickData.length,
+                gazes: report.gazeData.length,
+            });
+        };
+        databaseService.on('update', updateHandler);
+        return () => {
+            databaseService.off('update', updateHandler);
+        };
+    }, []);
 
-
-function MainMenu({clickData}: ClickHistoryProps) {
-    const [isClickHistoryOpen, setIsClickHistoryOpen] = useState(false);
     return (
-        <div className={styles.menu}>
-            <button
-                onClick={() => setIsClickHistoryOpen(!isClickHistoryOpen)}>{isClickHistoryOpen ? 'Close history' : 'Open history'}</button>
-            {isClickHistoryOpen && <ClickHistory clickData={clickData}/>}
+        <div>
+            <h1>HCI Vision</h1>
+            <div>
+                <button onClick={start} disabled={tracking}>Start tracking</button>
+                <button onClick={stop} disabled={!tracking}>Stop tracking</button>
+            </div>
+            <div>
+                <p>Clicks: {summary.clicks}</p>
+                <p>Gazes: {summary.gazes}</p>
+            </div>
         </div>
-    )
+    );
 }
 
-export default MainMenu;
+export default MainWindow;

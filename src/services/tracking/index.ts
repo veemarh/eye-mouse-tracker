@@ -1,1 +1,1 @@
-export * from './WebGazerLoader'
+export * from './WebGazerTrackingService'
