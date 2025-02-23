@@ -1,9 +1,9 @@
 import {useState, useEffect} from 'react';
-import {webGazerTrackingService} from '../../services/tracking';
-import {databaseService} from '../../services/storage';
+import {webGazerTrackingService} from '../services/tracking';
+import {databaseService} from '../services/storage';
 import {Link} from 'react-router-dom';
 
-function MainMenu() {
+export function MainPage() {
     const [tracking, setTracking] = useState(false);
     const [summary, setSummary] = useState({clicks: 0, gazes: 0});
 
@@ -55,5 +55,3 @@ function MainMenu() {
         </div>
     );
 }
-
-export default MainMenu;

@@ -1,7 +1,7 @@
 import {useParams} from 'react-router-dom';
-import {databaseService} from '../../services/storage';
+import {databaseService} from '../services/storage';
 
-function SessionAnalytics() {
+export function AnalyticsPage() {
     const {sessionId} = useParams<{ sessionId: string }>();
     const session = databaseService.getAllSessions().find(s => s.id === sessionId);
 
@@ -14,5 +14,3 @@ function SessionAnalytics() {
         </>
     )
 }
-
-export default SessionAnalytics;

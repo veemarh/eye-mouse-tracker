@@ -1,7 +1,7 @@
-import {databaseService} from '../../services/storage';
+import {databaseService} from '../services/storage';
 import {Link} from 'react-router-dom';
 
-function SessionsList() {
+export function SessionsPage() {
     const sessions = databaseService.getAllSessions();
     return (
         <>
@@ -22,5 +22,3 @@ function SessionsList() {
         </>
     )
 }
-
-export default SessionsList;
