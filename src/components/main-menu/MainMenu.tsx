@@ -1,8 +1,9 @@
 import {useState, useEffect} from 'react';
 import {webGazerTrackingService} from '../../services/tracking';
 import {databaseService} from '../../services/storage';
+import {Link} from 'react-router-dom';
 
-function MainWindow() {
+function MainMenu() {
     const [tracking, setTracking] = useState(false);
     const [summary, setSummary] = useState({clicks: 0, gazes: 0});
 
@@ -50,8 +51,9 @@ function MainWindow() {
                 <p>Clicks: {summary.clicks}</p>
                 <p>Gazes: {summary.gazes}</p>
             </div>
+            {!tracking && <Link to={`/sessions`}>View all sessions</Link>}
         </div>
     );
 }
 
-export default MainWindow;
+export default MainMenu;

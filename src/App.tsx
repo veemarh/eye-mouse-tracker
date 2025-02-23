@@ -1,26 +1,18 @@
-import {useState} from 'react'
 import './App.css'
-import MainMenu from './components/main-menu/MainMenu.tsx';
+import MainMenu from './components/main-menu/MainMenu'
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import SessionAnalytics from './components/session-analytics/SessionAnalytics';
+import SessionsList from './components/sessions-list/SessionsList';
 
 function App() {
-    const [count, setCount] = useState(0)
-
     return (
-        <>
-            <MainMenu/>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<MainMenu/>}/>
+                <Route path="/analytics/:sessionId" element={<SessionAnalytics/>}/>
+                <Route path="/sessions" element={<SessionsList/>}/>
+            </Routes>
+        </BrowserRouter>
     )
 }
 

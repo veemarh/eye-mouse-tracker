@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3';
 import {StorageService} from './storage-service.interface.ts';
 import {ClickData, GazeData, MouseData, SessionData} from '../../@types';
 import {webGazerTrackingService} from '../tracking';
+import {v4 as uuidv4} from 'uuid';
 
 class DatabaseService extends EventEmitter implements StorageService {
     private currentSession: SessionData | null = null;
@@ -16,6 +17,7 @@ class DatabaseService extends EventEmitter implements StorageService {
 
     startNewSession() {
         this.currentSession = {
+            id: uuidv4(),
             gazeData: [],
             clickData: [],
             mouseData: [],
