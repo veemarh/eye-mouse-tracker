@@ -1,5 +1,6 @@
 import {useParams} from 'react-router-dom';
 import {databaseService} from '../services/storage';
+import {Heatmap} from '../components/visualizations';
 
 export function AnalyticsPage() {
     const {sessionId} = useParams<{ sessionId: string }>();
@@ -11,6 +12,7 @@ export function AnalyticsPage() {
     return (
         <>
             <h1>Session analytics #{sessionId}</h1>
+            <Heatmap data={session.gazeData}/>
         </>
     )
 }
