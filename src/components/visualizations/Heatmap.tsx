@@ -57,6 +57,10 @@ export function Heatmap<T>({data, extractCoordinates}: HeatmapProps<T>) {
             min: 1,
             data: points
         });
+
+        return () => {
+            heatmapInstanceRef.current?.setData({max: 0, min: 0, data: []});
+        };
     }, [data, extractCoordinates]);
 
     return (
