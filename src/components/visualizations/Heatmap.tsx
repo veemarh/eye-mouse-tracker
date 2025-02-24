@@ -1,11 +1,22 @@
 import {useEffect, useRef} from 'react';
 import HeatMap from 'heatmap-ts';
-import {GazeData} from '../../@types';
 
 const MAP_WIDTH = 500;
 const MAP_HEIGHT = 500;
 
-export function Heatmap({data}: { data: GazeData[] }) {
+export interface HeatmapCoordinates {
+    x: number;
+    y: number;
+    value?: number;
+    radius?: number;
+}
+
+interface HeatmapProps<T> {
+    data: T[];
+    extractCoordinates: (item: T) => HeatmapCoordinates;
+}
+
+export function Heatmap<T>({data, extractCoordinates}: HeatmapProps<T>) {
     const containerRef = useRef<HTMLDivElement>(null);
     const heatmapInstanceRef = useRef<HeatMap | null>(null);
 
@@ -28,13 +39,16 @@ export function Heatmap({data}: { data: GazeData[] }) {
             });
         }
 
-        const rect = containerRef.current?.getBoundingClientRect();
-        const points = data.map(point => ({
-            x: Math.round((point.x / window.innerWidth) * (rect.width || MAP_WIDTH)),
-            y: Math.round((point.y / window.innerHeight) * (rect.height || MAP_HEIGHT)),
-            value: 1,
-            radius: 10,
-        }));
+        const rect = containerRef.current.getBoundingClientRect();
+        const points = data.map(item => {
+            const coords = extractCoordinates(item);
+            return {
+                x: Math.round((coords.x / window.innerWidth) * (rect.width || MAP_WIDTH)),
+                y: Math.round((coords.y / window.innerHeight) * (rect.height || MAP_HEIGHT)),
+                value: coords.value ?? 1,
+                radius: coords.radius ?? 10,
+            };
+        });
 
         const max = Math.max(...points.map(p => p.value), 1);
 
@@ -43,7 +57,7 @@ export function Heatmap({data}: { data: GazeData[] }) {
             min: 1,
             data: points
         });
-    }, [data]);
+    }, [data, extractCoordinates]);
 
     return (
         <div ref={containerRef}
