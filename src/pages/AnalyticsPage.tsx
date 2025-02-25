@@ -1,7 +1,7 @@
 import {useParams} from 'react-router-dom';
 import {databaseService} from '../services/storage';
-import {Heatmap} from '../components/visualizations';
-import {GazeData, MouseData} from "../@types";
+import {Heatmap, CorrelationChart} from '../components/visualizations';
+import {GazeData, MouseData} from '../@types';
 
 export function AnalyticsPage() {
     const {sessionId} = useParams<{ sessionId: string }>();
@@ -26,6 +26,20 @@ export function AnalyticsPage() {
                     x: item.x,
                     y: item.y,
                 })}
+            />
+            <CorrelationChart
+                xData={session.gazeData.map((item: GazeData) => item.x)}
+                yData={session.mouseData.map((item: MouseData) => item.x)}
+                xLabel={"Gaze X"}
+                yLabel={"Cursor X"}
+            />
+            <CorrelationChart
+                xData={session.gazeData.map((item: GazeData) => item.y)}
+                yData={session.mouseData.map((item: MouseData) => item.y)}
+                xLabel={"Gaze Y"}
+                yLabel={"Cursor Y"}
+                xDataKey={"gazeY"}
+                yDataKey={"cursorY"}
             />
         </>
     )

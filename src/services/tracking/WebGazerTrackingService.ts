@@ -4,6 +4,7 @@ import {TrackingService} from './tracking-service.interface.ts';
 
 class WebGazerTrackingService extends EventEmitter implements TrackingService {
     private lastGaze: GazeData | null = null;
+    private lastMouse: MouseData = {x: 0, y: 0, timestamp: Date.now()};
 
     constructor() {
         super();
@@ -20,7 +21,11 @@ class WebGazerTrackingService extends EventEmitter implements TrackingService {
                 if (data) {
                     const gazeData: GazeData = {x: data.x, y: data.y, timestamp: Date.now()};
                     this.lastGaze = gazeData;
-                    this.emit('gaze', gazeData);
+
+                    this.captureMouseOnce().then((mouseData: MouseData) => {
+                        this.emit('gaze', gazeData);
+                        this.emit('mouse', mouseData);
+                    });
                 }
             })
             .setTracker('clmtrackr')
@@ -29,7 +34,6 @@ class WebGazerTrackingService extends EventEmitter implements TrackingService {
 
         setTimeout(() => {
             document.addEventListener('click', this.handleClick);
-            document.addEventListener('mousemove', this.handleMouseMove);
         }, 0);
     }
 
@@ -37,7 +41,6 @@ class WebGazerTrackingService extends EventEmitter implements TrackingService {
         if (!window.webgazer) return;
         window.webgazer.end();
         document.removeEventListener('click', this.handleClick);
-        document.removeEventListener('mousemove', this.handleMouseMove);
     }
 
     private handleClick = (event: MouseEvent) => {
@@ -48,10 +51,34 @@ class WebGazerTrackingService extends EventEmitter implements TrackingService {
         this.emit('click', clickData);
     };
 
-    private handleMouseMove = (event: MouseEvent) => {
-        const mouseData: MouseData = {x: event.clientX, y: event.clientY, timestamp: Date.now()};
-        this.emit('mouse', mouseData);
-    };
+    /**
+     * Захватывает одно событие движения мыши, используя одноразовый обработчик.
+     * Если событие не происходит в течение 10 мс, возвращает последнее известное положение.
+     */
+    private captureMouseOnce(): Promise<MouseData> {
+        return new Promise((resolve) => {
+            let resolved = false;
+            const handler = (event: MouseEvent) => {
+                if (!resolved) {
+                    resolved = true;
+                    document.removeEventListener('mousemove', handler);
+                    const mouseData: MouseData = {x: event.clientX, y: event.clientY, timestamp: Date.now()};
+                    this.lastMouse = mouseData;
+                    resolve(mouseData);
+                }
+            };
+
+            document.addEventListener('mousemove', handler, {once: true});
+
+            setTimeout(() => {
+                if (!resolved) {
+                    resolved = true;
+                    document.removeEventListener('mousemove', handler);
+                    resolve(this.lastMouse);
+                }
+            }, 10);
+        });
+    }
 }
 
 export const webGazerTrackingService = new WebGazerTrackingService();

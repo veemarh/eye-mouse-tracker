@@ -1,1 +1,2 @@
-export * from './Heatmap.tsx'
+export * from './Heatmap'
+export * from './CorrelationChart'
