@@ -2,6 +2,8 @@ import {useParams} from 'react-router-dom';
 import {databaseService} from '../services/storage';
 import {Heatmap, CorrelationChart} from '../components/visualizations';
 import {GazeData, MouseData} from '../@types';
+import {useMemo} from 'react';
+import {syncVelocityPairs} from '../utils';
 
 export function AnalyticsPage() {
     const {sessionId} = useParams<{ sessionId: string }>();
@@ -10,6 +12,11 @@ export function AnalyticsPage() {
     if (!session) {
         return <h2>Session not found</h2>;
     }
+
+    const velocityPairs = useMemo(() => {
+        return syncVelocityPairs(session.gazeData, session.mouseData);
+    }, [session]);
+
     return (
         <>
             <h1>Session analytics #{sessionId}</h1>
@@ -26,6 +33,14 @@ export function AnalyticsPage() {
                     x: item.x,
                     y: item.y,
                 })}
+            />
+            <CorrelationChart
+                xData={velocityPairs.map(p => p.gazeSpeed)}
+                yData={velocityPairs.map(p => p.cursorSpeed)}
+                xLabel="Gaze Speed (px/s)"
+                yLabel="Cursor Speed (px/s)"
+                xDataKey="gazeSpeed"
+                yDataKey="cursorSpeed"
             />
             <CorrelationChart
                 xData={session.gazeData.map((item: GazeData) => item.x)}
