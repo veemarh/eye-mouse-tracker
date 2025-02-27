@@ -6,7 +6,6 @@ import {
     CartesianGrid,
     XAxis,
     YAxis,
-    Tooltip,
     Legend,
 } from 'recharts';
 
@@ -35,8 +34,8 @@ export function CorrelationChart({
 
     const chartData = useMemo(() => {
         return Array.from({length: minLength}, (_, i) => ({
-            [xDataKey]: xData[i],
-            [yDataKey]: yData[i],
+            [xDataKey]: Math.max(xData[i], 0),
+            [yDataKey]: Math.max(yData[i], 0),
         }));
     }, [xData, yData, minLength]);
 
@@ -63,7 +62,6 @@ export function CorrelationChart({
                     position: 'insideLeft',
                 }}
             />
-            <Tooltip cursor={{strokeDasharray: '3 3'}}/>
             <Legend/>
             <Scatter name="Correlation" data={chartData} fill="#82ca9d"
                      shape={

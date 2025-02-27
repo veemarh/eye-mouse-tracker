@@ -45,14 +45,16 @@ export function AnalyticsPage() {
             <CorrelationChart
                 xData={session.gazeData.map((item: GazeData) => item.x)}
                 yData={session.mouseData.map((item: MouseData) => item.x)}
-                xLabel={"Gaze X"}
-                yLabel={"Cursor X"}
+                xLabel={"Gaze X (px)"}
+                yLabel={"Cursor X (px)"}
+                xDataKey={"gazeX"}
+                yDataKey={"cursorX"}
             />
             <CorrelationChart
                 xData={session.gazeData.map((item: GazeData) => item.y)}
                 yData={session.mouseData.map((item: MouseData) => item.y)}
-                xLabel={"Gaze Y"}
-                yLabel={"Cursor Y"}
+                xLabel={"Gaze Y (px)"}
+                yLabel={"Cursor Y (px)"}
                 xDataKey={"gazeY"}
                 yDataKey={"cursorY"}
             />
