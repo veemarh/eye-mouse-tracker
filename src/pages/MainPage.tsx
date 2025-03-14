@@ -1,23 +1,20 @@
 import {useState, useEffect} from 'react';
-import {webGazerTrackingService} from '../services/tracking';
-import {databaseService} from '../services/storage';
 import {Link} from 'react-router-dom';
+import {apiGateway} from '../services/APIGateway';
 
 export function MainPage() {
     const [tracking, setTracking] = useState(false);
     const [summary, setSummary] = useState({clicks: 0, gazes: 0});
 
     const start = () => {
-        databaseService.startNewSession();
-        webGazerTrackingService.start();
+        apiGateway.startTracking()
         setTracking(true);
     };
 
     const stop = () => {
-        webGazerTrackingService.stop();
-        databaseService.endCurrentSession();
+        apiGateway.stopTracking();
         setTracking(false);
-        const session = databaseService.getCurrentSessionData();
+        const session = apiGateway.getCurrentSessionData();
         setSummary({
             clicks: session ? session.clickData.length : 0,
             gazes: session ? session.gazeData.length : 0,
@@ -26,7 +23,7 @@ export function MainPage() {
 
     useEffect(() => {
         const updateHandler = () => {
-            const session = databaseService.getCurrentSessionData();
+            const session = apiGateway.getCurrentSessionData();
             if (session) {
                 setSummary({
                     clicks: session.clickData.length,
@@ -34,9 +31,9 @@ export function MainPage() {
                 });
             }
         };
-        databaseService.on('update', updateHandler);
+        apiGateway.onUpdate(updateHandler);
         return () => {
-            databaseService.off('update', updateHandler);
+            apiGateway.offUpdate(updateHandler);
         };
     }, []);
 

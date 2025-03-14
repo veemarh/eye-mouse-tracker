@@ -1,8 +1,8 @@
-import {databaseService} from '../services/storage';
 import {Link} from 'react-router-dom';
+import {apiGateway} from '../services/APIGateway.ts';
 
 export function SessionsPage() {
-    const sessions = databaseService.getAllSessions();
+    const sessions = apiGateway.getSessionList();
     return (
         <>
             <h1>Sessions list</h1>

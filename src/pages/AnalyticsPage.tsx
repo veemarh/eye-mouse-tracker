@@ -1,13 +1,13 @@
 import {useParams} from 'react-router-dom';
-import {databaseService} from '../services/storage';
 import {Heatmap, CorrelationChart} from '../components/visualizations';
 import {GazeData, MouseData} from '../@types';
 import {useMemo} from 'react';
 import {syncVelocityPairs} from '../utils';
+import {apiGateway} from '../services/APIGateway.ts';
 
 export function AnalyticsPage() {
     const {sessionId} = useParams<{ sessionId: string }>();
-    const session = databaseService.getAllSessions().find(s => s.id === sessionId);
+    const session = apiGateway.getSessionList().find(s => s.id === sessionId);
 
     if (!session) {
         return <h2>Session not found</h2>;
