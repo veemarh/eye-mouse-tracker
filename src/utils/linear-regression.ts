@@ -1,11 +1,4 @@
-/**
- * Interface for the results of a linear regression.
- */
-interface LinearRegressionResult {
-    slope: number;
-    intercept: number;
-    rSquared: number;
-}
+import {LinearRegressionResult} from '../@types';
 
 /**
  * Performs simple linear regression on the given arrays x and y, returning the results:

@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import {apiGateway} from '../services/APIGateway.ts';
+import {apiGateway} from '../services/api';
 
 export function SessionsPage() {
     const sessions = apiGateway.getSessionList();

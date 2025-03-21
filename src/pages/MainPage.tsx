@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import {apiGateway} from '../services/APIGateway';
+import {apiGateway} from '../services/api';
 
 export function MainPage() {
     const [tracking, setTracking] = useState(false);
