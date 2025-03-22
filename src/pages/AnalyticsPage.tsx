@@ -13,12 +13,14 @@ export function AnalyticsPage() {
 
     const [metrics, setMetrics] = useState<MetricsResult>();
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const sessionId: string = params.sessionId;
     const session = apiGateway.getSession(sessionId);
 
     useEffect(() => {
-        try {
-            const metricsToShow = apiGateway.getMetrics(sessionId, [
+        const fetchMetrics = () => {
+            setLoading(true);
+            apiGateway.getMetrics(sessionId, [
                 'pearson-x',
                 'pearson-y',
                 'linear-x',
@@ -26,23 +28,37 @@ export function AnalyticsPage() {
                 'velocity-correlation',
                 'si',
                 'dr',
-            ]);
+            ])
+                .then((data) => {
+                    if (!data) {
+                        throw new Error("Error when processing session data.");
+                    }
+                    setMetrics(data)
+                })
+                .catch((err) => {
+                    setError(err.message);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        };
 
-            setMetrics(metricsToShow);
-        } catch (err: any) {
-            setError(err.message);
-        }
+        fetchMetrics();
     }, [sessionId]);
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-    if (!session) {
-        return <h2>Session not found</h2>;
-    }
-    if (!metrics) {
-        return <div>Loading metrics...</div>;
-    }
+    if (!metrics || loading) return <h1>Loading...</h1>;
+    if (!session || error) return (
+        <>
+            <h1>{error}</h1>
+            <div>
+                {!session
+                    ? <div>Session not found.</div>
+                    : <div>Something wen wrong.</div>
+                }
+                <button onClick={() => window.location.reload()}>Reload the page</button>
+            </div>
+        </>
+    );
 
     return (
         <>

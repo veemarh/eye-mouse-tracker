@@ -46,7 +46,7 @@ class APIGateway {
         this.storage.off('update', callback);
     }
 
-    getMetrics(sessionId: string, metrics: MetricType[]): MetricsResult {
+    async getMetrics(sessionId: string, metrics: MetricType[]): Promise<MetricsResult> {
         const session = this.getSession(sessionId);
 
         const results: MetricsResult = {
@@ -58,6 +58,8 @@ class APIGateway {
             si: 0,
             dr: 0,
         };
+
+        await Promise.resolve();
 
         for (const metric of metrics) {
             switch (metric) {
