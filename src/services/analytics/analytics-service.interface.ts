@@ -1,13 +1,13 @@
 import {GazeData, LinearRegressionResult, MouseData, VelocityPair} from '../../@types';
 
 export interface MetricsService {
-    calculateLinearRegression(x: number[], y: number[]): LinearRegressionResult;
+    calculateLinearRegression(x: number[], y: number[]): Promise<LinearRegressionResult>;
 
-    calculatePearsonCorrelation(x: number[], y: number[]): number;
+    calculatePearsonCorrelation(x: number[], y: number[]): Promise<number>;
 
-    getSynchronizedVelocityPairs(gazeData: GazeData[], mouseData: MouseData[], toleranceMs: number): VelocityPair[];
+    getSynchronizedVelocityPairs(gazeData: GazeData[], mouseData: MouseData[], toleranceMs: number): Promise<VelocityPair[]>;
 
-    calculateSI(): number;
+    calculateSI(): Promise<number>;
 
-    calculateDR(): number;
+    calculateDR(): Promise<number>;
 }

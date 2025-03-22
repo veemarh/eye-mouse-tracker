@@ -1,26 +1,30 @@
-import {pearsonCorrelation, linearRegression, syncVelocityPairs} from '../../utils';
-import {GazeData, MouseData, VelocityPair} from '../../@types';
+import {GazeData, LinearRegressionResult, MouseData, VelocityPair} from '../../@types';
 import {MetricsService} from './analytics-service.interface.ts';
+import {runWorker} from '../web-worker/runWorker.ts';
 
-class AnalyticsService implements MetricsService {
-    calculateLinearRegression(x: number[], y: number[]) {
-        return linearRegression(x, y);
+export class AnalyticsService implements MetricsService {
+    async calculateLinearRegression(x: number[], y: number[]): Promise<LinearRegressionResult> {
+        return runWorker<LinearRegressionResult>('linearRegression', {x, y});
     }
 
-    calculatePearsonCorrelation(x: number[], y: number[]): number {
-        return pearsonCorrelation(x, y);
+    async calculatePearsonCorrelation(x: number[], y: number[]): Promise<number> {
+        return runWorker<number>('pearsonCorrelation', {x, y});
     }
 
-    getSynchronizedVelocityPairs(gazeData: GazeData[], mouseData: MouseData[], toleranceMs: number = 50): VelocityPair[] {
-        return syncVelocityPairs(gazeData, mouseData, toleranceMs);
+    async getSynchronizedVelocityPairs(
+        gazeData: GazeData[],
+        mouseData: MouseData[],
+        toleranceMs: number = 50
+    ): Promise<VelocityPair[]> {
+        return runWorker<VelocityPair[]>('syncVelocityPairs', {gazeData, mouseData, toleranceMs});
     }
 
-    calculateSI(): number {
-        return 0;
+    async calculateSI(): Promise<number> {
+        return runWorker<number>('si', {});
     }
 
-    calculateDR(): number {
-        return 0;
+    async calculateDR(): Promise<number> {
+        return runWorker<number>('dr', {});
     }
 }
 

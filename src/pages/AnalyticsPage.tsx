@@ -88,8 +88,8 @@ export function AnalyticsPage() {
                         yData={session.mouseData.map((item: MouseData) => item.x)}
                         xLabel={"Gaze X (px)"}
                         yLabel={"Cursor X (px)"}
-                        xDataKey={"gazeX"}
-                        yDataKey={"cursorX"}
+                        xDataKey={"gazex"}
+                        yDataKey={"cursorx"}
                     />
                     {metrics.pearsonX.toFixed(3)}
                 </div>
@@ -99,8 +99,8 @@ export function AnalyticsPage() {
                         yData={session.mouseData.map((item: MouseData) => item.y)}
                         xLabel={"Gaze Y (px)"}
                         yLabel={"Cursor Y (px)"}
-                        xDataKey={"gazeY"}
-                        yDataKey={"cursorY"}
+                        xDataKey={"gazey"}
+                        yDataKey={"cursory"}
                     />
                     {metrics.pearsonY.toFixed(3)}
                 </div>
@@ -110,8 +110,8 @@ export function AnalyticsPage() {
                         yData={metrics.velocityCorrelation.map(p => p.cursorSpeed)}
                         xLabel="Gaze Speed (px/s)"
                         yLabel="Cursor Speed (px/s)"
-                        xDataKey="gazeSpeed"
-                        yDataKey="cursorSpeed"
+                        xDataKey="gazespeed"
+                        yDataKey="cursorspeed"
                     />
                 </div>
             </div>

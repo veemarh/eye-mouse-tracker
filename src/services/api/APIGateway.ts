@@ -59,48 +59,82 @@ class APIGateway {
             dr: 0,
         };
 
-        await Promise.resolve();
+        const promises: Promise<any>[] = [];
 
         for (const metric of metrics) {
             switch (metric) {
                 case 'pearson-x':
-                    results.pearsonX = this.analytics.calculatePearsonCorrelation(
-                        session.gazeData.map(g => g.x),
-                        session.mouseData.map(m => m.x)
+                    promises.push(
+                        this.analytics.calculatePearsonCorrelation(
+                            session.gazeData.map(g => g.x),
+                            session.mouseData.map(m => m.x)
+                        ).then(result => {
+                            results.pearsonX = result;
+                        })
                     );
                     break;
                 case 'pearson-y':
-                    results.pearsonY = this.analytics.calculatePearsonCorrelation(
-                        session.gazeData.map(g => g.y),
-                        session.mouseData.map(m => m.y)
+                    promises.push(
+                        this.analytics.calculatePearsonCorrelation(
+                            session.gazeData.map(g => g.y),
+                            session.mouseData.map(m => m.y)
+                        ).then(result => {
+                            results.pearsonY = result;
+                        })
                     );
                     break;
                 case 'linear-x':
-                    results.linearX = this.analytics.calculateLinearRegression(
-                        session.gazeData.map(g => g.x),
-                        session.mouseData.map(m => m.x)
+                    promises.push(
+                        this.analytics.calculateLinearRegression(
+                            session.gazeData.map(g => g.x),
+                            session.mouseData.map(m => m.x)
+                        ).then(result => {
+                            results.linearX = result;
+                        })
                     );
                     break;
                 case 'linear-y':
-                    results.linearY = this.analytics.calculateLinearRegression(
-                        session.gazeData.map(g => g.y),
-                        session.mouseData.map(m => m.y)
+                    promises.push(
+                        this.analytics.calculateLinearRegression(
+                            session.gazeData.map(g => g.y),
+                            session.mouseData.map(m => m.y)
+                        ).then(result => {
+                            results.linearY = result;
+                        })
                     );
                     break;
                 case 'velocity-correlation':
-                    results.velocityCorrelation = this.analytics.getSynchronizedVelocityPairs(
-                        session.gazeData, session.mouseData
+                    promises.push(
+                        this.analytics.getSynchronizedVelocityPairs(
+                            session.gazeData, session.mouseData
+                        ).then(result => {
+                            results.velocityCorrelation = result;
+                        })
                     );
                     break;
                 case 'si':
-                    results.si = this.analytics.calculateSI();
+                    promises.push(
+                        this.analytics.calculateSI().then(result => {
+                            results.si = result;
+                        })
+                    );
                     break;
                 case 'dr':
-                    results.dr = this.analytics.calculateDR();
+                    promises.push(
+                        this.analytics.calculateDR().then(result => {
+                            results.dr = result;
+                        })
+                    );
                     break;
+                default:
+                    throw new Error(`Unknown metric type: ${metric}`);
             }
         }
-
+        try {
+            await Promise.all(promises);
+        } catch {
+            throw new Error('Error when calculating using ?worker');
+        }
         return results;
     }
 }
