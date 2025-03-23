@@ -1,5 +1,4 @@
 import {SVGProps, useMemo} from 'react';
-import {JSX} from 'react/jsx-runtime';
 import {
     ScatterChart,
     Scatter,
@@ -39,6 +38,10 @@ export function CorrelationChart({
         }));
     }, [xData, yData, minLength]);
 
+    const renderPoint = (props: SVGProps<SVGCircleElement>) => {
+        const {cx, cy, fill} = props;
+        return <circle cx={cx} cy={cy} r={2} fill={fill}/>;
+    };
     return (
         <ScatterChart width={width} height={height}>
             <CartesianGrid/>
@@ -64,9 +67,8 @@ export function CorrelationChart({
             />
             <Legend/>
             <Scatter name="Correlation" data={chartData} fill="#82ca9d"
-                     shape={
-                         (props: JSX.IntrinsicAttributes & SVGProps<SVGCircleElement>) => <circle {...props} r={2}/>
-                     }
+                     shape={renderPoint}
+                     isAnimationActive={false}
             />
         </ScatterChart>
     );

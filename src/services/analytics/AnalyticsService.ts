@@ -1,6 +1,6 @@
 import {GazeData, LinearRegressionResult, MouseData, VelocityPair} from '../../@types';
 import {MetricsService} from './analytics-service.interface.ts';
-import {runWorker} from '../web-worker/runWorker.ts';
+import {runWorker} from '../web-worker';
 
 export class AnalyticsService implements MetricsService {
     async calculateLinearRegression(x: number[], y: number[]): Promise<LinearRegressionResult> {
