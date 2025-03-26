@@ -18,6 +18,16 @@ export interface MetricsResult {
     linearX: LinearRegressionResult;
     linearY: LinearRegressionResult;
     velocityCorrelation: VelocityPair[];
-    si: number;
+    si: SIHeatmapCell[];
     dr: number;
+}
+
+/**
+ * Interface for the results of a synchronization index.
+ */
+export interface SIHeatmapCell {
+    x: number;
+    y: number;
+    si: number;
+    count: number;
 }

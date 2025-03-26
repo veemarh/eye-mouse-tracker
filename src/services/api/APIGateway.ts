@@ -55,7 +55,7 @@ class APIGateway {
             linearX: {slope: 0, intercept: 0, rSquared: 0},
             linearY: {slope: 0, intercept: 0, rSquared: 0},
             velocityCorrelation: [],
-            si: 0,
+            si: [],
             dr: 0,
         };
 
@@ -114,7 +114,9 @@ class APIGateway {
                     break;
                 case 'si':
                     promises.push(
-                        this.analytics.calculateSI().then(result => {
+                        this.analytics.calculateSI(
+                            session.gazeData, session.mouseData, document.documentElement.clientWidth, document.documentElement.clientHeight
+                        ).then(result => {
                             results.si = result;
                         })
                     );

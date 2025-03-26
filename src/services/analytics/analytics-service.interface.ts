@@ -1,4 +1,4 @@
-import {GazeData, LinearRegressionResult, MouseData, VelocityPair} from '../../@types';
+import {GazeData, LinearRegressionResult, MouseData, SIHeatmapCell, VelocityPair} from '../../@types';
 
 export interface MetricsService {
     calculateLinearRegression(x: number[], y: number[]): Promise<LinearRegressionResult>;
@@ -7,7 +7,7 @@ export interface MetricsService {
 
     getSynchronizedVelocityPairs(gazeData: GazeData[], mouseData: MouseData[], toleranceMs: number): Promise<VelocityPair[]>;
 
-    calculateSI(): Promise<number>;
+    calculateSI(gazeData: GazeData[], mouseData: MouseData[], screenWidth: number, screenHeight: number, radius: number, gridSize: number): Promise<SIHeatmapCell[]>;
 
     calculateDR(): Promise<number>;
 }

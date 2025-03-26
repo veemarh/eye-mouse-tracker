@@ -1,4 +1,4 @@
-import {linearRegression, pearsonCorrelation, syncVelocityPairs} from '../utils';
+import {linearRegression, pearsonCorrelation, synchronizationIndex, syncVelocityPairs} from '../utils';
 
 interface WorkerMessage {
     type: 'pearsonCorrelation' | 'linearRegression' | 'syncVelocityPairs' | 'si' | 'dr';
@@ -23,7 +23,12 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
                 break;
             }
             case 'si': {
-                result = 0;
+                result = synchronizationIndex(payload.gazeData, payload.mouseData, {
+                    screenWidth: payload.screenWidth,
+                    screenHeight: payload.screenHeight,
+                    radius: payload.radius,
+                    gridSize: payload.gridSize,
+                });
                 break;
             }
             case 'dr': {

@@ -1,6 +1,6 @@
 import {useParams} from 'react-router-dom';
-import {Heatmap, CorrelationChart} from '../components/visualizations';
-import {GazeData, MouseData, MetricsResult} from '../@types';
+import {Heatmap, CorrelationChart, HeatmapCoordinates} from '../components/visualizations';
+import {GazeData, MouseData, MetricsResult, SIHeatmapCell} from '../@types';
 import {useEffect, useMemo, useState} from 'react';
 import {apiGateway} from '../services/api';
 import Skeleton from 'react-loading-skeleton'
@@ -60,6 +60,20 @@ export function AnalyticsPage() {
     if (error) return <ErrorScreen error={error} session={session}/>;
     if (!session) return <h2>Session not found.</h2>;
 
+    const convertToHeatmapData = (cells: SIHeatmapCell[]): HeatmapCoordinates[] => {
+        const maxSI = Math.max(...cells.map(c => c.si));
+        const maxCount = Math.max(...cells.map(c => c.count));
+
+        return cells.map(cell => ({
+            x: cell.x,
+            y: cell.y,
+            value: 100 * cell.si / maxSI,
+            radius: (cell.count / maxCount) * 100
+        }));
+    };
+
+    const heatmapData = convertToHeatmapData(metrics.si);
+
     return (
         <>
             <h1>Session analytics</h1>
@@ -112,6 +126,10 @@ export function AnalyticsPage() {
                         yLabel="Cursor Speed (px/s)"
                         xDataKey="gazespeed"
                         yDataKey="cursorspeed"
+                    />
+                    <Heatmap
+                        data={heatmapData}
+                        extractCoordinates={(item) => item}
                     />
                 </div>
             </div>
