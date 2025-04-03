@@ -56,7 +56,7 @@ class APIGateway {
             linearY: {slope: 0, intercept: 0, rSquared: 0},
             velocityCorrelation: [],
             si: [],
-            dr: 0,
+            dr: [],
         };
 
         const promises: Promise<any>[] = [];
@@ -123,7 +123,9 @@ class APIGateway {
                     break;
                 case 'dr':
                     promises.push(
-                        this.analytics.calculateDR().then(result => {
+                        this.analytics.calculateDR(
+                            session.gazeData, session.mouseData, document.documentElement.clientWidth, document.documentElement.clientHeight
+                        ).then(result => {
                             results.dr = result;
                         })
                     );

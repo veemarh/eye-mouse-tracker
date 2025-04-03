@@ -19,7 +19,7 @@ export interface MetricsResult {
     linearY: LinearRegressionResult;
     velocityCorrelation: VelocityPair[];
     si: SIHeatmapCell[];
-    dr: number;
+    dr: DRHeatmapCell[];
 }
 
 /**
@@ -29,5 +29,15 @@ export interface SIHeatmapCell {
     x: number;
     y: number;
     si: number;
+    count: number;
+}
+
+/**
+ * Interface for the results of a discrepancy ratio.
+ */
+export interface DRHeatmapCell {
+    x: number;
+    y: number;
+    dr: number;
     count: number;
 }

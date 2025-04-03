@@ -1,4 +1,4 @@
-import {GazeData, LinearRegressionResult, MouseData, SIHeatmapCell, VelocityPair} from '../../@types';
+import {DRHeatmapCell, GazeData, LinearRegressionResult, MouseData, SIHeatmapCell, VelocityPair} from '../../@types';
 import {MetricsService} from './analytics-service.interface.ts';
 import {runWorker} from '../web-worker';
 
@@ -30,8 +30,15 @@ export class AnalyticsService implements MetricsService {
         return runWorker<SIHeatmapCell[]>('si', {gazeData, mouseData, screenWidth, screenHeight, radius, gridSize});
     }
 
-    async calculateDR(): Promise<number> {
-        return runWorker<number>('dr', {});
+    async calculateDR(
+        gazeData: GazeData[],
+        mouseData: MouseData[],
+        screenWidth: number,
+        screenHeight: number,
+        gridSize: number = 100,
+        actionThreshold: number = 5,
+    ): Promise<DRHeatmapCell[]> {
+        return runWorker<DRHeatmapCell[]>('dr', {gazeData, mouseData, screenWidth, screenHeight, gridSize, actionThreshold});
     }
 }
 

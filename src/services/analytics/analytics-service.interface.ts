@@ -1,4 +1,4 @@
-import {GazeData, LinearRegressionResult, MouseData, SIHeatmapCell, VelocityPair} from '../../@types';
+import {DRHeatmapCell, GazeData, LinearRegressionResult, MouseData, SIHeatmapCell, VelocityPair} from '../../@types';
 
 export interface MetricsService {
     calculateLinearRegression(x: number[], y: number[]): Promise<LinearRegressionResult>;
@@ -9,5 +9,5 @@ export interface MetricsService {
 
     calculateSI(gazeData: GazeData[], mouseData: MouseData[], screenWidth: number, screenHeight: number, radius: number, gridSize: number): Promise<SIHeatmapCell[]>;
 
-    calculateDR(): Promise<number>;
+    calculateDR(gazeData: GazeData[], mouseData: MouseData[], screenWidth: number, screenHeight: number, gridSize: number, actionThreshold: number): Promise<DRHeatmapCell[]>;
 }

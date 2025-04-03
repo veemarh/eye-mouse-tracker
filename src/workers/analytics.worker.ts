@@ -1,4 +1,10 @@
-import {linearRegression, pearsonCorrelation, synchronizationIndex, syncVelocityPairs} from '../utils';
+import {
+    discrepancyRatio,
+    linearRegression,
+    pearsonCorrelation,
+    synchronizationIndex,
+    syncVelocityPairs
+} from '../utils';
 
 interface WorkerMessage {
     type: 'pearsonCorrelation' | 'linearRegression' | 'syncVelocityPairs' | 'si' | 'dr';
@@ -32,7 +38,12 @@ self.onmessage = async (e: MessageEvent<WorkerMessage>) => {
                 break;
             }
             case 'dr': {
-                result = 0;
+                result = discrepancyRatio(payload.gazeData, payload.mouseData, {
+                    screenWidth: payload.screenWidth,
+                    screenHeight: payload.screenHeight,
+                    gridSize: payload.gridSize,
+                    actionThreshold: payload.actionThreshold,
+                });
                 break;
             }
             default:
