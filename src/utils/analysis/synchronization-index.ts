@@ -1,4 +1,4 @@
-import {GazeData, MouseData, SIHeatmapCell} from '../@types';
+import {GazeData, MouseData, SIHeatmapCell} from '../../@types';
 
 /**
  * Computes the Synchronization Index (SI) for a grid covering the screen.

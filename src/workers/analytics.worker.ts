@@ -4,7 +4,7 @@ import {
     pearsonCorrelation,
     synchronizationIndex,
     syncVelocityPairs
-} from '../utils';
+} from '../utils/analysis';
 
 interface WorkerMessage {
     type: 'pearsonCorrelation' | 'linearRegression' | 'syncVelocityPairs' | 'si' | 'dr';

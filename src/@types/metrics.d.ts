@@ -1,4 +1,5 @@
 import {VelocityPair} from './velocity';
+import {CoordinatesData} from './coordinates';
 
 /**
  * Interface for the results of a linear regression.
@@ -25,7 +26,7 @@ export interface MetricsResult {
 /**
  * Interface for the results of a synchronization index.
  */
-export interface SIHeatmapCell {
+export interface SIHeatmapCell implements CoordinatesData {
     x: number;
     y: number;
     si: number;
@@ -35,7 +36,7 @@ export interface SIHeatmapCell {
 /**
  * Interface for the results of a discrepancy ratio.
  */
-export interface DRHeatmapCell {
+export interface DRHeatmapCell implements CoordinatesData {
     x: number;
     y: number;
     dr: number;

@@ -1,10 +1,11 @@
 import {useParams} from 'react-router-dom';
-import {Heatmap, CorrelationChart, HeatmapCoordinates} from '../components/visualizations';
-import {GazeData, MouseData, MetricsResult, SIHeatmapCell} from '../@types';
+import {Heatmap, CorrelationChart} from '../components/visualizations';
+import {GazeData, MouseData, MetricsResult} from '../@types';
 import {useEffect, useMemo, useState} from 'react';
 import {apiGateway} from '../services/api';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import {convertToHeatmapData, smoothedHeatmapData} from '../utils/chart';
 
 export function AnalyticsPage() {
     const params = useParams<{ sessionId: string }>();
@@ -60,42 +61,76 @@ export function AnalyticsPage() {
     if (error) return <ErrorScreen error={error} session={session}/>;
     if (!session) return <h2>Session not found.</h2>;
 
-    const convertToHeatmapData = (cells: SIHeatmapCell[]): HeatmapCoordinates[] => {
-        const maxSI = Math.max(...cells.map(c => c.si));
-        const maxCount = Math.max(...cells.map(c => c.count));
+    const siCells = metrics.si;
+    const siHeatmapData = convertToHeatmapData(
+        siCells.map(c => ({x: c.x, y: c.y})),
+        siCells.map(c => c.si),
+        siCells.map(c => c.count)
+    );
 
-        return cells.map(cell => ({
-            x: cell.x,
-            y: cell.y,
-            value: 100 * cell.si / maxSI,
-            radius: (cell.count / maxCount) * 100
-        }));
-    };
+    const gazeCells = session.gazeData;
+    const smoothedGazeData = smoothedHeatmapData(gazeCells, {
+        screenWidth: document.documentElement.clientWidth,
+        screenHeight: document.documentElement.clientHeight,
+        gridSize: 100,
+    });
+    const gazeHeatmapData = convertToHeatmapData(
+        smoothedGazeData.map(c => ({x: c.x, y: c.y})),
+        smoothedGazeData.map(() => 1),
+        smoothedGazeData.map(c => c.count)
+    );
 
-    const heatmapData = convertToHeatmapData(metrics.si);
+    const mouseCells = session.mouseData;
+    const smoothedMouseData = smoothedHeatmapData(mouseCells, {
+        screenWidth: document.documentElement.clientWidth,
+        screenHeight: document.documentElement.clientHeight,
+        gridSize: 100,
+    });
+    const mouseHeatmapData = convertToHeatmapData(
+        smoothedMouseData.map(c => ({x: c.x, y: c.y})),
+        smoothedMouseData.map(() => 1),
+        smoothedMouseData.map(c => c.count)
+    );
 
     return (
         <>
             <h1>Session analytics</h1>
             <div style={{display: 'flex', flexWrap: 'wrap', gap: '1em', justifyContent: 'space-evenly'}}>
                 <div>
-                    <Heatmap
-                        data={session.gazeData}
-                        extractCoordinates={(item: GazeData) => ({
-                            x: item.x,
-                            y: item.y,
-                        })}
-                    />
+                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '1em', justifyContent: 'space-evenly'}}>
+                        <Heatmap
+                            data={gazeCells}
+                            extractCoordinates={(item: GazeData) => ({
+                                x: item.x,
+                                y: item.y,
+                            })}
+                        />
+                        <Heatmap
+                            data={gazeHeatmapData}
+                            extractCoordinates={(item) => item}
+                        />
+                    </div>
+                    <p>Gaze data.</p>
                 </div>
                 <div>
-                    <Heatmap
-                        data={session.mouseData}
-                        extractCoordinates={(item: MouseData) => ({
-                            x: item.x,
-                            y: item.y,
-                        })}
-                    />
+                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '1em', justifyContent: 'space-evenly'}}>
+                        <Heatmap
+                            data={session.mouseData}
+                            extractCoordinates={(item: MouseData) => ({
+                                x: item.x,
+                                y: item.y,
+                            })}
+                        />
+                        <Heatmap
+                            data={mouseHeatmapData}
+                            extractCoordinates={(item) => item}
+                        />
+                    </div>
+                    <p>Mouse data.</p>
                 </div>
+                <p><strong>Correlation analysis.</strong> Each point indicates one corresponding sample of gaze and
+                    cursor. Each graph includes all data points across all participants. Gaze data is represented on the
+                    x-axis and cursor data on the y-axis.</p>
                 <div>
                     <CorrelationChart
                         xData={gazeX}
@@ -105,7 +140,8 @@ export function AnalyticsPage() {
                         xDataKey="gazex"
                         yDataKey="cursorx"
                     />
-                    {metrics.pearsonX.toFixed(3)}
+                    <p>Position relationship in the x dimension.<br/>
+                        <i>Pearson correlation coefficient: {metrics.pearsonX.toFixed(3)}</i></p>
                 </div>
                 <div>
                     <CorrelationChart
@@ -116,7 +152,8 @@ export function AnalyticsPage() {
                         xDataKey="gazey"
                         yDataKey="cursory"
                     />
-                    {metrics.pearsonY.toFixed(3)}
+                    <p>Position relationship in the y dimension.<br/>
+                        <i>Pearson correlation coefficient: {metrics.pearsonY.toFixed(3)}</i></p>
                 </div>
                 <div>
                     <CorrelationChart
@@ -127,10 +164,18 @@ export function AnalyticsPage() {
                         xDataKey="gazespeed"
                         yDataKey="cursorspeed"
                     />
+                    <p>Speed relationship, independent of direction.</p>
+                </div>
+            </div>
+            <p><strong>Synchronization Index.</strong> The percentage of time when the cursor is within a radius of 50
+                pixels from the point of fixation of the gaze</p>
+            <div style={{display: 'flex', flexWrap: 'wrap', gap: '1em', justifyContent: 'space-evenly'}}>
+                <div>
                     <Heatmap
-                        data={heatmapData}
+                        data={siHeatmapData}
                         extractCoordinates={(item) => item}
                     />
+                    <p>Synchronization Index.</p>
                 </div>
             </div>
         </>

@@ -1,4 +1,4 @@
-import {GazeData, MouseData, VelocityPair} from '../@types';
+import {GazeData, MouseData, VelocityPair} from '../../@types';
 
 /**
  * Calculates velocities (in pixels per second) for an array of data points.

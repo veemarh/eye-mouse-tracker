@@ -1,4 +1,4 @@
-import {DRHeatmapCell, GazeData, MouseData} from '../@types';
+import {DRHeatmapCell, GazeData, MouseData} from '../../@types';
 
 /**
  * Computes the Discrepancy Ratio (DR) for building a heatmap.

@@ -1,4 +1,4 @@
-import {LinearRegressionResult} from '../@types';
+import {LinearRegressionResult} from '../../@types';
 
 /**
  * Performs simple linear regression on the given arrays x and y, returning the results:
