@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import * as cheerio from 'cheerio'
+import * as cheerio from 'cheerio';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,28 +23,16 @@ app.get('/proxy', async (req, res) => {
             // @ts-ignore
             const baseUrl = new URL(targetUrl).origin;
 
-            $('link[rel="stylesheet"]').each((_, elem) => {
-                const href = $(elem).attr('href');
-                if (href && !href.startsWith('http')) {
-                    $(elem).attr('href', baseUrl + href);
-                }
-            });
-            $('script').each((_, elem) => {
-                const src = $(elem).attr('src');
-                if (src && !src.startsWith('http')) {
-                    $(elem).attr('src', baseUrl + src);
-                }
-            });
-            $('img').each((_, elem) => {
-                const src = $(elem).attr('src');
-                if (src && !src.startsWith('http')) {
-                    $(elem).attr('src', baseUrl + src);
-                }
-            });
+            if ($('base').length === 0) {
+                $('head').prepend(`<base href="${baseUrl}/">`);
+            }
+
             html = $.html();
             res.set('Content-Type', 'text/html');
         } else if (contentType && contentType.includes('text/css')) {
             res.set('Content-Type', 'text/css');
+        } else if (contentType && contentType.includes('application/javascript')) {
+            res.set('Content-Type', 'application/javascript');
         }
         res.send(html);
     } catch (error: any) {
