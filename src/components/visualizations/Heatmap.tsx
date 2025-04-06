@@ -1,8 +1,6 @@
 import {useEffect, useRef} from 'react';
 import HeatMap from 'heatmap-ts';
-
-const MAP_WIDTH = 500;
-const MAP_HEIGHT = 500;
+import {useWindowDimensions} from '../../hooks/useWindowDimensions';
 
 export interface HeatmapCoordinates {
     x: number;
@@ -14,11 +12,14 @@ export interface HeatmapCoordinates {
 interface HeatmapProps<T> {
     data: T[];
     extractCoordinates: (item: T) => HeatmapCoordinates;
+    originalWidth: number;
+    originalHeight: number;
 }
 
-export function Heatmap<T>({data, extractCoordinates}: HeatmapProps<T>) {
+export function Heatmap<T>({data, extractCoordinates, originalWidth, originalHeight}: HeatmapProps<T>) {
     const containerRef = useRef<HTMLDivElement>(null);
     const heatmapInstanceRef = useRef<HeatMap | null>(null);
+    const {width: currentWindowWidth, height: currentWindowHeight} = useWindowDimensions();
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -39,12 +40,11 @@ export function Heatmap<T>({data, extractCoordinates}: HeatmapProps<T>) {
             });
         }
 
-        const rect = containerRef.current.getBoundingClientRect();
         const points = data.map(item => {
             const coords = extractCoordinates(item);
             return {
-                x: Math.round((coords.x / window.innerWidth) * (rect.width || MAP_WIDTH)),
-                y: Math.round((coords.y / window.innerHeight) * (rect.height || MAP_HEIGHT)),
+                x: coords.x / 3,
+                y: coords.y / 3,
                 value: coords.value ?? 1,
                 radius: coords.radius ?? 10,
             };
@@ -61,10 +61,15 @@ export function Heatmap<T>({data, extractCoordinates}: HeatmapProps<T>) {
         return () => {
             heatmapInstanceRef.current?.setData({max: 0, min: 0, data: []});
         };
-    }, [data, extractCoordinates]);
+    }, [data, extractCoordinates, originalWidth, originalHeight, currentWindowWidth, currentWindowHeight]);
 
     return (
         <div ref={containerRef}
-             style={{width: `${MAP_WIDTH}px`, height: `${MAP_HEIGHT}px`, border: '1px solid black'}}></div>
-    )
+             style={{
+                 width: originalWidth / 3 + 'px',
+                 height: originalHeight / 3 + 'px',
+                 border: '1px solid black'
+             }}
+        ></div>
+    );
 }

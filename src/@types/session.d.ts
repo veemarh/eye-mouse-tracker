@@ -6,4 +6,6 @@ interface SessionData {
     clickData: ClickData[];
     mouseData: MouseData[];
     startedAt: Date;
+    originalWidth: number;
+    originalHeight: number;
 }

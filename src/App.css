@@ -1,14 +1,17 @@
 #root {
-  margin: 0 auto;
-  text-align: center;
+    margin: 0 auto;
+    text-align: center;
 }
+
 #webgazerVideoFeed,
 #webgazerVideoCanvas,
 #webgazerFaceOverlay,
 #webgazerFaceFeedbackBox {
     opacity: 0.25;
+    pointer-events: none;
 }
 
 #webgazerGazeDot {
-    visibility: hidden;
+    /*visibility: hidden;*/
+    pointer-events: none;
 }
