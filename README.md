@@ -1,50 +1,49 @@
-# React + TypeScript + Vite
+# HCI Vision
+Application for evaluating user interfaces based on the analysis of joint eye and mouse movements.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Overview
+Eye-Mouse Tracker is an advanced web application designed to assess user interfaces by analyzing the synchronized movements of the user's gaze and mouse cursor. The application collects real-time tracking data via a webcam using WebGazer.js and browser-based mouse event tracking, stores sessions locally, and performs detailed analytical computations such as correlation, linear regression, Synchronization Index (SI), and Dissonance Ratio (DR). Visualizations are rendered as heatmaps and correlation charts to provide clear insights into user behavior.
 
-Currently, two official plugins are available:
+### Features
+* **Real-Time Tracking.** Collects synchronized gaze and mouse data in real-time using WebGazer.js and browser MouseEvents.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Local Data Storage.** Stores each tracking session separately, allowing isolated analysis of user interactions.
 
-## Expanding the ESLint configuration
+* **Analytics with Web Workers.** Heavy analytical computations are offloaded to Web Workers, ensuring that the UI remains responsive.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+* **Proxy Server for External Pages.** A proxy server built on Express with Cheerio for HTML manipulation enables loading external web pages into iframes while preserving their original styles.
 
-- Configure the top-level `parserOptions` property like this:
+* **Dynamic Visualizations.** Interactive heatmaps and correlation charts built with Recharts visualize the raw tracking data and computed metrics.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+* **Modular Architecture.** Organized via an API Gateway that abstracts access to the various modules, including tracking, storage, analytics, and visualization.
+
+### Technology Stack
+* **TypeScript & React.** Ensures robust, strongly typed code and dynamic, modular UI components.
+
+* **Vite.** Provides fast development and efficient production builds.
+
+* **Express & Cheerio.** Implements a proxy server for fetching and adapting external web resources.
+
+* **Web Workers.** Offloads heavy analytical computations to separate threads, enhancing performance and responsiveness.
+
+* **EventEmitters.** Facilitates real-time communication between tracking services and storage.
+
+### Installation & Running
+Once the repository is cloned:
+1. **Install dependencies.**
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+npm install
 ```
+2. **Build the client application.**
+```
+npm run build
+```
+3. **Start the proxy server.**
+```
+npm run start:server
+```
+4. **Launch the development server.**
+```
+npm run dev
+```
+After running these commands, the application will be available at http://localhost:5173 or the configured port.
