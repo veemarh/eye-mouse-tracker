@@ -47,3 +47,10 @@ npm run start:server
 npm run dev
 ```
 After running these commands, the application will be available at http://localhost:5173 or the configured port.
+
+---
+Authors and contributors
+ 
+The project is completed during the preparation of Maria. A. Sidorkina work under course Testing of software at SPbPU Institute of Computer Science and Cybersecurity (SPbPU ICSC).
+
+The main contributor Maria. A. Sidorkina, student of SPbPU ICSC. The advisor and contributor Vladimir A. Parkhomenko., Seniour Lecturer of SPbPU ICSC.
